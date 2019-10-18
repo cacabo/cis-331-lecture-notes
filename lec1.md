@@ -4,48 +4,41 @@
 
 CIS331: Introduction to networks and security
 
-Instructor: Sebastian Angel
-
-Email: sebastian.angel@cis.upenn.edu
-
-Office hours: Thursday 4 -- 6 PM
-
-Course website: https://cis.upenn.edu/~cis331
+- Instructor: Sebastian Angel
+- Email: sebastian.angel@cis.upenn.edu
+- Office hours: Thursday 4 - 6 PM
+- Course website: https://cis.upenn.edu/~cis331
 
 TAs:
 
-- Petra Robertson (petrar @ seas), Monday 1:30 -- 3:30 PM
-
-- Lawrence Dunn, (dunnla @ seas), Tuesday 12:15 -- 2:15 PM
-
-- Natasha Gedeon (nged @ seas), Wednesday 12:30 -- 2:30 PM
-
-- Amit Lohe (alohe @ seas), Wednesday 4 -- 6 PM
-
-- Michael Zhou (mizho @ seas), Friday 12:30 -- 2:30 PM
+- Petra Robertson (petrar @ seas), Monday 1:30 - 3:30 PM
+- Lawrence Dunn, (dunnla @ seas), Tuesday 12:15 - 2:15 PM
+- Natasha Gedeon (nged @ seas), Wednesday 12:30 - 2:30 PM
+- Amit Lohe (alohe @ seas), Wednesday 4 - 6 PM
+- Michael Zhou (mizho @ seas), Friday 12:30 - 2:30 PM
 
 Content of today's lecture:
 
 1. Course information
 
-- Prerequisites
-- Goals
-- Skills
-- Structure
-- Ethics
+   - Prerequisites
+   - Goals
+   - Skills
+   - Structure
+   - Ethics
 
 2. Administrative stuff
 
-- Course website
-- Schedule
-- TAs and office hours
-- Piazza
-- Lecture notes
-- Labs, homeworks, exams
-- Grading
-- Late day policy
-- Academic dishonesty
-- FAQ
+   - Course website
+   - Schedule
+   - TAs and office hours
+   - Piazza
+   - Lecture notes
+   - Labs, homeworks, exams
+   - Grading
+   - Late day policy
+   - Academic dishonesty
+   - FAQ
 
 3. What is computer security?
 
@@ -60,47 +53,52 @@ Content of today's lecture:
   - How to use a terminal/console
 
 - Goals
-  -- Learn how to think like an attacker
-  -- Learn how to reason about threats and risks
-  -- Learn defensive programming
-  -- Learn how to balance security cost and benefits
-  -- Learn how to be an ethical hacker
+
+  - Learn how to think like an attacker
+  - Learn how to reason about threats and risks
+  - Learn defensive programming
+  - Learn how to balance security cost and benefits
+  - Learn how to be an ethical hacker
 
 - Skills you will gain
-  -- Learn to carry out different attacks (overflow, SQL injection, WEP cracking)
-  -- Learn to use automated tools to help you find vulnerable programs
-  -- Learn to carefully review code and spot mistakes
-  -- Learn about different cryptographic primitives
+
+  - Learn to carry out different attacks (overflow, SQL injection, WEP cracking)
+  - Learn to use automated tools to help you find vulnerable programs
+  - Learn to carefully review code and spot mistakes
+  - Learn about different cryptographic primitives
 
 - Structure and topics
 
   - First third of the class is on Application/OS security
-    -- How can attackers exploit bugs in programs.
-    -- What defenses are available.
-    -- How can multiple users share the same OS.
-    -- Should we be using passwords?
+
+    - How can attackers exploit bugs in programs.
+    - What defenses are available.
+    - How can multiple users share the same OS.
+    - Should we be using passwords?
 
   - Second third of the class is an introduction to cryptography
-    -- What was crypto like centuries ago?
-    -- What is crypto like now?
-    -- How is data encrypted? What are hash functions? What are signatures?
-    -- What is the "s" in HTTPS?
+
+    - What was crypto like centuries ago?
+    - What is crypto like now?
+    - How is data encrypted? What are hash functions? What are signatures?
+    - What is the "s" in HTTPS?
 
   - Last third of the class is on network and web security
-    -- How do networks prevent introduders
-    -- How do websites keep your information private?
-    -- How do they keep track of your session so you don't have to log in every time?
-    -- Attacks: SQL injections, cross-site request forgery (CSRF), cross-site scripting
-    -- Spam, Phishing, Botnets
 
-* Ethics
+    - How do networks prevent introduders
+    - How do websites keep your information private?
+    - How do they keep track of your session so you don't have to log in every time?
+    - Attacks: SQL injections, cross-site request forgery (CSRF), cross-site scripting
+    - Spam, Phishing, Botnets
+
+- Ethics
   - We will be discussing and implementing real-world attacks
   - Using some of these these techniques in the real world may be unethical,
     a violation of university policies, or a violation of state or federal law.
-    -- Ethics requires you to refrain from doing harm.
-    -- Always respect privacy and property rights.
+    - Ethics requires you to refrain from doing harm.
+    - Always respect privacy and property rights.
   - [ Slide with U.S. Code 1030 ]
-    -- up to 5 years in prison
+    - up to 5 years in prison
 
 # Mechanics and administrative stuff
 
@@ -126,39 +124,44 @@ Content of today's lecture:
 - Exams: There is a midterm exam and a comprehensive final exam.
 
 - Grading:
-  -- Homeworks 20%
-  -- Labs 35%
-  -- Midterm exam 20%
-  -- Final exam 25%
-  -- Is there a curve? If needed, but it can only benefit you (no curving down).
+
+  - Homeworks 20%
+  - Labs 35%
+  - Midterm exam 20%
+  - Final exam 25%
+  - Is there a curve? If needed, but it can only benefit you (no curving down).
 
 - Late day policy:
-  -- 5 late days to be used throughout the semester.
-  -- A day counts as 24 hours. No fractional late days.
-  -- Can submit any lab or homework late without notifying instructor
-  -- Can use _at most_ 2 late days for any assignment
-  -- If a late day is used for a lab, the late day applies to _both_ team members.
-  -- Once late days are used up, no credit for late assignments (the only
-  exception are extreme circumstances, to be discussed on a case by case basis)
+
+  - 5 late days to be used throughout the semester.
+  - A day counts as 24 hours. No fractional late days.
+  - Can submit any lab or homework late without notifying instructor
+  - Can use _at most_ 2 late days for any assignment
+  - If a late day is used for a lab, the late day applies to _both_ team members.
+  - Once late days are used up, no credit for late assignments (the only
+    exception are extreme circumstances, to be discussed on a case by case basis)
 
 - Academic dishonesty:
-  -- Zero-tolerance policy. Do not receive solutions from others or share your solutions
-  with others. It is OK to work with your lab partner, but only on the labs. Homeworks
-  should be done individually.
+
+  - Zero-tolerance policy. Do not receive solutions from others or share your solutions
+    with others. It is OK to work with your lab partner, but only on the labs. Homeworks
+    should be done individually.
 
 - Special accommodations:
-  -- If you need special accommodations for the exams, please come talk to me.
+
+  - If you need special accommodations for the exams, please come talk to me.
 
 - FAQ:
-  -- Can I do the projects on my own? Strongly discouraged because the labs are hard and
-  benefit from brainstorming with others. But _can_ I? Yes.
 
-  -- Do I need special hardware? One of the labs requires a compatible wireless card. Most
-  Laptops / OSes should be compatible, but we have a few USB wireless cards available that
-  you may borrow during office hours.
+  - Can I do the projects on my own? Strongly discouraged because the labs are hard and
+    benefit from brainstorming with others. But _can_ I? Yes.
 
-  -- Is there a required book? No. There are multiple recommended books, all available for
-  free online. See website for info.
+  - Do I need special hardware? One of the labs requires a compatible wireless card. Most
+    Laptops / OSes should be compatible, but we have a few USB wireless cards available that
+    you may borrow during office hours.
+
+  - Is there a required book? No. There are multiple recommended books, all available for
+    free online. See website for info.
 
 # What is computer security?
 
@@ -167,26 +170,29 @@ Content of today's lecture:
   misbehave.
 
 - Nature vs adversarial settings are very different.
-  -- Consider a natural disaster vs a planned attack by a foreign country.
+
+  - Consider a natural disaster vs a planned attack by a foreign country.
 
   [ Example in slides ]
 
-  -- In nature, something bad _might_ happen, but we can reason about
-  expectation or average case behavior.
-  -- In an adversarial setting, we need to reason about worst-case behavior,
-  or at least understand the tradeoffs that we are making.
-  -- Murphy's machine vs Satan's machine.
+  - In nature, something bad _might_ happen, but we can reason about
+    expectation or average case behavior.
+  - In an adversarial setting, we need to reason about worst-case behavior,
+    or at least understand the tradeoffs that we are making.
+  - Murphy's machine vs Satan's machine.
 
 # Security mindset
 
 - Thinking like an attacker
-  -- Understand techniques for circumventing a defense
-  -- Look for ways security can break, not reasons _why_ it won't.
+
+  - Understand techniques for circumventing a defense
+  - Look for ways security can break, not reasons _why_ it won't.
 
 - Thinking like a defender
-  -- Know what you're defending and against whom
-  -- Weight benefits VS costs: No system is ever completely secure
-  -- Exercise "rational paranoia"
+
+  - Know what you're defending and against whom
+  - Weight benefits VS costs: No system is ever completely secure
+  - Exercise "rational paranoia"
 
 # Thinking like an attacker
 
@@ -200,12 +206,13 @@ Content of today's lecture:
   Think outside the box.
 
 - [ Slide with 2 examples:
-  -- Example 1: Parking lot fence. Honest users will stop. Malicious will
-  go around.
-  -- Example 2: Keypad. Defender thinks: as long as my stuff is protected
-  by a 4 digit combination and I never leak it, my stuff is fake. Defender
-  fails to consider physical wear over time.
-  ]
+
+  - Example 1: Parking lot fence. Honest users will stop. Malicious will
+    go around.
+  - Example 2: Keypad. Defender thinks: as long as my stuff is protected
+    by a 4 digit combination and I never leak it, my stuff is fake. Defender
+    fails to consider physical wear over time.
+    ]
 
 - Thought experiment: How would you break into Levine? Any ideas?
 
@@ -262,13 +269,14 @@ Example.
 (3) Assessing risk
 
 - What would security breaches cost us?
-  -- Direct cost: money, property
-  -- Indirect cost: reputation
+
+  - Direct cost: money, property
+  - Indirect cost: reputation
 
 - How likely are these costs?
-  -- Probability of attacks? Is this a multi-billion dollar business
-  or just your personal homepage?
-  -- Probability of success?
+  - Probability of attacks? Is this a multi-billion dollar business
+    or just your personal homepage?
+  - Probability of success?
 
 (4) Countermeasures
 
