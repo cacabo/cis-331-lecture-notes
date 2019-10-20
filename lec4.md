@@ -11,23 +11,24 @@ Announcements:
 Agenda for Today
 
 - Recap of Tuesday's lecture
-  -- Some clarifications:
-  -- return value VS return address
-  -- where are the environment variables?
-  -- who is setting page permissions? who is enforcing them?
-  -- Stack canaries
-  -- DEP / NX bit
-  -- ASLR
-  -- What about libc?
+
+  - Some clarifications:
+  - return value VS return address
+  - where are the environment variables?
+  - who is setting page permissions? who is enforcing them?
+  - Stack canaries
+  - DEP / NX bit
+  - ASLR
+  - What about libc?
 
 - How to defeat these defenses
-  -- ASLR:
 
+  - ASLR:
   - heap spraying
   - NOP slide
   - Format string vulnerabilities to learn addresses
 
-  -- DEP:
+- DEP:
 
   - Return-oriented programming
 
@@ -38,21 +39,25 @@ Agenda for Today
 Suppose we have the following functions. I'll add made up addresses to the
 margin to ease reference.
 
-0 int f() {
-4 int a = 1;
-8 int x = g(a);
-12 return x;
-}
-
-16 int g(int a) {
-20 return a + 1;
-}
+```
+0  | int f() {
+4  |   int a = 1;
+8  |   int x = g(a);
+12 |   return x;
+   | }
+   |
+16 | int g(int a) {
+20 |   return a + 1;
+   | }
+```
 
 The stack when g is called looks as follows:
 
+```
 [ argument: a = 1 ][ return address: 12 ]
 [ saved ebp ] <- %ebp
 [ ... ][ ... ] <- %esp
+```
 
 So where is the return value??? In other words, where is a+1?
 It's not in the stack! It's in register %eax.
@@ -72,49 +77,66 @@ in %eax. Returning by value requires the caller to allocate space in the stack.
 
 For example:
 
-        typedef struct {
-          int x;
-          int y;
-          int z;
-        } my_struct;
+```
+  typedef struct {
+    int x;
+    int y;
+    int z;
+  } my_struct;
 
-0 int f() {
-4 int a = 1;
-8 my_struct s = g(a);
-12 return s.x;
-}
+0  int f() {
+4    int a = 1;
+8    my_struct s = g(a);
+12   return s.x;
+   }
 
 16 my_struct g(int a) {
-20 my_struct s = {0, 0, a+1};
-24 return s + 1;
-}
+20   my_struct s = {0, 0, a+1};
+24   return s + 1;
+   }
+```
 
 The stack when g is called looks as follows:
 
-[ ... ][ s.z ]
-[ s.y ][ s.x ]
-[ ... ][ a = 1 ]  
- [ pointer to s ][ return address: 12 ]
+```
+[ ... ]
+[ s.z ]
+[ s.y ]
+[ s.x ]
+[ ... ]
+[ a = 1 ]
+[ pointer to s ]
+[ return address: 12 ]
 [ saved ebp ] <- %ebp
 [ ... ][ ... ] <- %esp
+```
 
 # Where are the environment variables?
 
 We need to look more closely a process' address space
 
-        High addresses
+```
+High addresses
 
-[ NULL ][ filename of program ]
+[ NULL ]
+[ filename of program ]
 [ program environment ] <- environment variables live here
-[ program arguments ][ stack ] <- pointers to env variables are in the stack
-[ ... ][ heap ]
-[ .bss ][ .data ]
+[ program arguments ]
+[ stack ] <- pointers to env variables are in the stack
+[ ... ]
+[ heap ]
+[ .bss ]
+[ .data ]
 [ .text ]
+
 Low addresses
+```
 
-In particular, recall that main is defined as:
+In particular, recall that `main` is defined as:
 
+```c
 int main(int argc, char *argv[], char *envp[]);
+```
 
 So pointers to the environment variables are in the stack,
 and the actual variables are above the stack.
@@ -136,7 +158,7 @@ the loader sets the associated memory pages as non-executable by setting
 their corresponding non-execute (NX) bit.
 
 A process can ask the kernel to change those permissions at runtime using the
-mprotect system call.
+`mprotect` system call.
 
 The Memory Management Unit (MMU) is part of the CPU. It is the one responsible for
 enforcing the memory permissions. When the CPU attempts to fetch an instruction
@@ -219,37 +241,53 @@ Example of how to call a function in libc.
 
 Suppose we have a function called foo:
 
+```c
 int foo(void) {
-char buf[10];
-gets(buf);
-return 0;
+  char buf[10];
+  gets(buf);
+  return 0;
 }
+```
 
 When foo is called its stack looks like:
 
-[ ... ][ ret addr ]
+```
+[ ... ]
+[ ret addr ]
 [ saved ebp ] <- %ebp
-[ ... ][ buf ]
+[ ... ]
+[ buf ]
 [ ... ] <- %esp
+```
 
 Suppose we want to call a libc function called bar with argument x.
 We should construct an input that modifies foo's stack to look like:
 
-[ ... ][ x ]
-[ other ret addr ][ address of bar ]
+```
+[ ... ]
+[ x ]
+[ other ret addr ]
+[ address of bar ]
 [ saved ebp ] <- %ebp
 [ ... ] <- %esp
+```
 
 After the leave instruction, the stack will look like:
 
+```
 [ ... ] <- %ebp (somewhere up the stack)
-[ x ][ other ret addr ]
+[ x ]
+[ other ret addr ]
 [ address of bar ] <- %esp
+```
 
 After ret instruction, the stack will look like:
 
-[ ... ][ x ]
+```
+[ ... ]
+[ x ]
 [ other ret addr ] <- %esp
+```
 
 And the instruction pointer will be at the address of bar.
 At this point, the CPU will execute the preamble of bar which pushes %ebp, moves
@@ -257,9 +295,14 @@ At this point, the CPU will execute the preamble of bar which pushes %ebp, moves
 
 So we get:
 
-[ ... ][ x ]
-[ other ret addr ][ saved ebp ] <- %ebp
-[ ... ][ ] <- %esp
+```
+[ ... ]
+[ x ]
+[ other ret addr ]
+[ saved ebp ] <- %ebp
+[ ... ]
+[ ] <- %esp
+```
 
 Which looks just like the stack of bar when it is called normally!
 
