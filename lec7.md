@@ -21,6 +21,7 @@ Agenda for Today
    - Alternatives
 
 3. Intro to cryptography
+
    - Goals and applications
    - Historical ciphers
      - Shift cipher
@@ -52,41 +53,39 @@ in a video game.
 
 But modern cryptography can do a lot more! Some examples:
 
-    - Digital signatures
-      Goal: must prevent copy-paste of signatures
+- Digital signatures
+  Goal: must prevent copy-paste of signatures
 
-    - Anonymous communication
-      Goal: must prevent ISPs/Proxies from learning who is talking to whom.
+- Anonymous communication
+  Goal: must prevent ISPs/Proxies from learning who is talking to whom.
 
-    - Digital cash / Anonymous digital cash
-      Goal: must prevent double spending
+- Digital cash / Anonymous digital cash
+  Goal: must prevent double spending
 
-    - Homomorphic encryption
-      Goal: Compute Enc(f(x, y)) from Enc(x) and Enc(y) without learning
-      x or y. For example if f(x, y) = x + y, then we want to be able to
-      compute Enc(x + y) from Enc(x) and Enc(y).
+- Homomorphic encryption
+  Goal: Compute Enc(f(x, y)) from Enc(x) and Enc(y) without learning
+  x or y. For example if f(x, y) = x + y, then we want to be able to
+  compute Enc(x + y) from Enc(x) and Enc(y).
 
-    - Private auctions
-      Goal: Compute the result of an auction without revealing the bids
+- Private auctions
+  Goal: Compute the result of an auction without revealing the bids
 
-    - Secure multiparty-computation
-      Goal: multiple parties have their own secret inputs.
-      For example, Alice has input x1, Bob has input x2, Charlie has
-      input x3. Multiparty computation allows them to compute some
-      function y = f(x1, x2, x3), without revealing their secret input.
+- Secure multiparty-computation
+  Goal: multiple parties have their own secret inputs.
+  For example, Alice has input x1, Bob has input x2, Charlie has
+  input x3. Multiparty computation allows them to compute some
+  function y = f(x1, x2, x3), without revealing their secret input.
 
-    - Verifiable outsourcing
-      Goal: send an input x and a function f to an untrusted server
-      (e.g., the "cloud"), and get back a result y and a proof \pi.
-      Client can check the proof to convince itself that y = f(x).
-      Crucial: checking the proof is *cheaper* than computing f(x) itself!
+- Verifiable outsourcing
+  Goal: send an input x and a function f to an untrusted server
+  (e.g., the "cloud"), and get back a result y and a proof \pi.
+  Client can check the proof to convince itself that y = f(x).
+  Crucial: checking the proof is _cheaper_ than computing f(x) itself!
 
 Cryptography is a rigorous science!
 
 - Requires a formal definition of the property/guarantee
-
 - Requires a mathematically precise threat model
-
 - Requires a construction
 
 - Requires a proof showing that if one can violate the guarantee provided

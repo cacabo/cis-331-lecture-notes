@@ -35,10 +35,10 @@ Agenda for Today
 2. See [lec8.txt]
 
 Major issue:
-  
- Perfect secrecy implies |K| >= |M| ... Why?
-  
- Suppose we had fewer keys. For example K = {0, 1}^n-1.
+
+Perfect secrecy implies |K| >= |M| ... Why?
+
+Suppose we had fewer keys. For example K = {0, 1}^n-1.
 Suppose E(k, m) = (1 || k) XOR m.
 
       Then, Pr[E(k, m) = c] will no longer be a constant! Because there is
@@ -102,48 +102,48 @@ A PRG G is a function that takes a random "seed" (a value that
 initializes the PRG) and generates "pseudorandom" bits (more than the
 number of bits in the seed).
 
-G: {0, 1}^s -> {0, 1}^n n >> s  
- -------
+```
+G: {0, 1}^s -> {0, 1}^n n >> s
+```
+
+---
+
 Seed space
 
-For example, we take a seed that's 256-bits, and expand it into billions of
-bits.
+For example, we take a seed that's 256-bits, and expand it into billions of bits.
 
 Key properties of PRG:
 
-    (1) Given a small random seed, one can compute output of
-    PRG efficiently with a deterministic algorithm (the seed is random
-    but the algorithm is deterministic).
+1. Given a small random seed, one can compute output of
+   PRG efficiently with a deterministic algorithm (the seed is random but the algorithm is deterministic).
 
-    (2) the output of the PRG "looks" random (we will revisit this)
+2. The output of the PRG "looks" random (we will revisit this)
 
 ---
 
 Stream cipher: Making OTP practical
 
-    Suppose that we are given a PRG G with the above two properties.
+Suppose that we are given a PRG G with the above two properties.
 
+[Draw picture of key expansion]
 
-    [Draw picture of key expansion]
+We then build the following cipher (E, D):
 
+```
+E(k, m):
+  k' = G(k)     // the "small" key becomes the seed!
+  c = m XOR k'
 
-    We then build the following cipher (E, D):
+D(k, m):
+  k' = G(k)
+  m = c XOR k'
+```
 
-    E(k, m):
-      k' = G(k)     // the "small" key becomes the seed!
-      c = m XOR k'
+Are stream ciphers perfectly secure?
 
+So what security guarantee do they give? Depends on G.
 
-    D(k, m):
-      k' = G(k)
-      m = c XOR k'
-
-
-    Are stream ciphers perfectly secure?
-
-    So what security guarantee do they give? Depends on G.
-
-    So let's talk about PRGs in more detail!
+So let's talk about PRGs in more detail!
 
 ---
 
@@ -162,34 +162,32 @@ Proof (by contradiction).
 
 Suppose PRG G is predictable and stream cipher _is_ secure.
 
-Suppose a setting where the attacker knows a small part of the message
-(e.g., many Internet/Web protocols have a "common" headers).
+Suppose a setting where the attacker knows a small part of the message (e.g., many Internet/Web protocols have a "common" headers).
 
-Then the attacker can use the knowledge of that small part of the message
-and the ciphertext c to derive the output of G for that small part of the
-message.
+Then the attacker can use the knowledge of that small part of the message and the ciphertext c to derive the output of G for that small part of the message.
 
-Since G is predictable, attacker can determine the next bits, and recover
-the rest of the message. As a result, the stream cipher is not secure.
+Since G is predictable, attacker can determine the next bits, and recover the rest of the message. As a result, the stream cipher is not secure.
 
 With mathematical notation:
 
 Adversary knows m\_{1, ..., i} and c.
 Adversary computes:
 
-    G(k)_{1, ..., i} = m_{1, ..., i} XOR c_{1, ..., i}
+```
+G(k)_{1, ..., i} = m_{1, ..., i} XOR c_{1, ..., i}
+```
 
 Since G is predictable, adversary computes:
 
-    G(k)_{i+1,...,n} = A(G(k)_{1, ..., i})
-
-    m_{i+1, ..., n) = c_{i+1, ..., n} XOR G(k)_{i+1, ..., n}
-
-    m = m_{1, ..., i} || m_{i+1, ..., n}
+```
+G(k)_{i+1,...,n} = A(G(k)_{1, ..., i})
+m_{i+1, ..., n) = c_{i+1, ..., n} XOR G(k)_{i+1, ..., n}
+m = m_{1, ..., i} || m_{i+1, ..., n}
+```
 
 So adversary can recover the entire plaintext!
 
-** Even if adversary can only recover next bit, this is still a problem **
+**Even if adversary can only recover next bit, this is still a problem**
 
 How do we formalize unpredictability?
 
@@ -200,9 +198,10 @@ Definition: A PRG G: K -> {0, 1}^n is predictable if:
 there exists "efficient" algorithm A and 1 <= i <= n-1 such that
 given k <-R K:
 
-    Pr[A(G(k)_{1, ..., i}) = G(k)_{i+1}] >= 1/2 + epsilon
-
-    for some "non-negligible" epsilon
+```
+Pr[A(G(k)_{1, ..., i}) = G(k)_{i+1}] >= 1/2 + epsilon
+for some "non-negligible" epsilon
+```
 
 (we discuss what "non-negligible" is later,
 but epsilon >= 1/2^30 would be considered non-negligible)
@@ -227,9 +226,11 @@ Suppose we have G(k)\_{1,...,n-1}, then we can predict G(k)\_n.
 
 What about libc's random number generator?
 
+```c
 libc random():
-r[i] = r[i-3] + r[i-31] % 2^32
-output r[i] >> 1
+  r[i] = r[i-3] + r[i-31] % 2^32
+  output r[i] >> 1
+```
 
 Is it predictable? Yup.
 

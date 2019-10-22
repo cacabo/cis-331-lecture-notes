@@ -67,12 +67,13 @@ E.g., Amazon doesn't really care who you really are as long as you pay
 
 Problem: how to authenticate users?
 
-    Setting: [ user ] <-> [ computer ] <-> [ verifier server ]
+```
+Setting: [ user ] <-> [ computer ] <-> [ verifier server ]
+```
 
-Passwords
+**Passwords**
 
-Need some secret between user and verifier
-call this set of bits a "password"
+Need some secret between user and verifier call this set of bits a "password"
 
 User types in username and password; server checks whether
 password is correct for that username.
@@ -80,170 +81,153 @@ password is correct for that username.
 Passwords is a valuable secret so want to avoid repetitive use and exposure
 Just for user authentication
 
-    - Once authenticated, use crypto keys between server/clients,
-      client certificates, cookies, etc.
+- Once authenticated, use crypto keys between server/clients,
+  client certificates, cookies, etc.
 
-    - Even for user authentication, good idea to compose passwords with
-      other techniques:
+- Even for user authentication, good idea to compose passwords with
+  other techniques:
 
-      -- Password manager, single-sign on, two-factor, etc.
-
-      -- Biometric (e.g., apple's fingerprint button)
+  - Password manager, single-sign on, two-factor, etc.
+  - Biometric (e.g., apple's fingerprint button)
 
 ---
 
 How to _store_ passwords?
 
-      Server must be able to verify passwords.
+Server must be able to verify passwords.
 
-      Strawman: store plaintext passwords.
+Strawman: store plaintext passwords.
 
-      Problem: if adversary compromises server, gets full list of passwords.
-               Really bad since server compromises happen all of the time!
+Problem: if adversary compromises server, gets full list of passwords.
+Really bad since server compromises happen all of the time!
 
-      Hashing: store a table of (username, H(password)).
+Hashing: store a table of `(username, H(password))`
 
-        Can still check a password: hash the supplied string,
-        compare with table, but now if adversary gets the table,
-        doesn't get the passwords (because hash function is assumed
-        to be hard to invert)
+- Can still check a password: hash the supplied string,
+  compare with table, but now if adversary gets the table,
+  doesn't get the passwords (because hash function is assumed
+  to be hard to invert)
+- Problem 1: password space is quite small.
 
-        Problem 1: password space is quite small.
+  Top 5000 password values account for 20% of users.
 
-          Top 5000 password values account for 20% of users.
+  Skewed distribution towards common passwords chosen by many users.
+  Yahoo password study: rule-of-thumb passwords are 10-20 bits of entropy.
 
-          Skewed distribution towards common passwords chosen by many users.
-          Yahoo password study: rule-of-thumb passwords are 10-20 bits of entropy.
+  - This roughly means that if password is equivalent to 10 random bits
+    attacker needs try 2^10 combinations to find password
 
-          - This roughly means that if password is equivalent to 10 random bits
-            attacker needs try 2^10 combinations to find password
+- Problem 2: hash functions optimized for performance---this _helps_
+  the adversary!
 
+  E.g., a laptop can do ~2M SHA1 operations per second.
+  Even with reasonable password (20 bits entropy), crack one account/second.
 
-        Problem 2: hash functions optimized for performance---this *helps*
-                   the adversary!
+Response: expensive key-derivation (e.g., PBKDF2 or BCrypt):
+replace the hash with a much more expensive hash function
 
-          E.g., a laptop can do ~2M SHA1 operations per second.
-          Even with reasonable password (20 bits entropy), crack one account/second.
+- Key-derivation functions have adjustable cost: make it arbitrarily slow.
+  E.g., can make hash cost be 1 second -- O(1M) times slower than SHA1.
 
+  Internally, often performs repeated hashing using a slow hash.
 
-      Response: expensive key-derivation (e.g., PBKDF2 or BCrypt):
-      replace the hash with a much more expensive hash function
+  Problem: adversary can build "rainbow tables".
 
-        Key-derivation functions have adjustable cost: make it arbitrarily slow.
-          E.g., can make hash cost be 1 second -- O(1M) times slower than SHA1.
+  - Table of password-to-hash mappings.
 
-        Internally, often performs repeated hashing using a slow hash.
+  - Expensive to compute, but helps efficiently invert hashes afterwards.
+    Only need to build this rainbow table for dictionary of common passwords.
 
-        Problem: adversary can build "rainbow tables".
+    Roughly: 1-second expensive hash -> 1M seconds ~ 10 days to hash the
+    one million most common pws.
 
-          Table of password-to-hash mappings.
+    After that, can very quickly crack common passwords in any password db.
 
-          Expensive to compute, but helps efficiently invert hashes afterwards.
-          Only need to build this rainbow table for dictionary of common passwords.
+- Better response: **salting**
 
-          Roughly: 1-second expensive hash -> 1M seconds ~ 10 days to hash the
-          one million most common pws.
+  Input some additional randomness into the password hash: H(salt, pw).
+  Where does the salt value come from? Stored on server in plaintext.
 
-          After that, can very quickly crack common passwords in any password db.
+  Why is this better if adversary compromises the salt too?
+  Cannot build rainbow tables.
 
-          [ You will get plenty of practice with Rainbow tables in Homework 2 :) ]
+  Choose a long random salt.
 
-
-       Better response: *salting*
-
-            Input some additional randomness into the password hash: H(salt, pw).
-            Where does the salt value come from?  Stored on server in plaintext.
-
-            Why is this better if adversary compromises the salt too?
-              Cannot build rainbow tables.
-
-            Choose a long random salt.
-
-            Choose a fresh salt each time user changes password.
+  Choose a fresh salt each time user changes password.
 
 ---
 
 How to _transmit_ passwords?
 
-    Bad idea: sending password to the server in cleartext.
+Bad idea: sending password to the server in cleartext.
 
-    Slightly better: send password over encrypted connection.
+Slightly better: send password over encrypted connection.
 
-    Why is this not great?
+Why is this not great?
 
-      -- If user mistakenly enters password of server A into server B,
-         server B can learn it.
+- If user mistakenly enters password of server A into server B,
+  server B can learn it.
 
-    Strawman alternative: send hash of password, instead of the password.
+Strawman alternative: send hash of password, instead of the password.
 
-    Not so great: hash becomes a "password equivalent", can still be resent
-    and server B would still be able to learn it.
+Not so great: hash becomes a "password equivalent", can still be resent
+and server B would still be able to learn it.
 
-    Better alternative: challenge-response scheme.
+Better alternative: challenge-response scheme.
 
-      1. User and server both know password.
+1. User and server both know password.
 
-      2. Server sends challenge R.
+2. Server sends challenge R.
 
-      3. User responds with H(R || password).
+3. User responds with H(R || password).
 
-      4. Server checks if response is H(R || password).
+4. Server checks if response is H(R || password).
 
-      If server knew password, server convinced user knows password.
+If server knew password, server convinced user knows password.
 
-      If server did not know password, server does not learn password.
+If server did not know password, server does not learn password.
 
 ---
 
 How to prevent server from brute-force guessing password based on H() value?
 
-    Expensive hash + salting (as discussed earlier)
-
-    Allow client to choose some randomness too: guard against rainbow tables.
+- Expensive hash + salting (as discussed earlier)
+- Allow client to choose some randomness too: guard against rainbow tables.
 
 How to defend against guessing?
 
-    Guessing attacks are a problem because of small key space.
-
-    Rate-limiting authentication attempts is important.
-
-    Implement time-out periods after too many incorrect guesses.
-
-    What to do after many failed authentication attempts?
+- Guessing attacks are a problem because of small key space.
+- Rate-limiting authentication attempts is important.
+- Implement time-out periods after too many incorrect guesses.
+- What to do after many failed authentication attempts?
 
 What matters in user's password choice?
 
-    Many sites impose certain requirements on passwords (e.g., length, chars).
+- Many sites impose certain requirements on passwords (e.g., length, chars).
 
-    In reality, what matters is entropy.
+- In reality, what matters is entropy.
 
-    Format requirements rarely translate into higher entropy
+- Format requirements rarely translate into higher entropy
 
-    Defeats only the simplest dictionary attacks.
+- Defeats only the simplest dictionary attacks.
 
-    Also has an unfortunate side-effect of complicating password generation.
-    E.g., no single password-gen algorithm satisfies every possible web site.
-    Conflicting length, symbol rules.
+- Also has an unfortunate side-effect of complicating password generation.
+  E.g., no single password-gen algorithm satisfies every possible web site.
+  Conflicting length, symbol rules.
 
 ---
 
 Password recovery.
 
-    Important part of the overall security story.
-
-    Sarah Palin's email account hack: Yahoo's recovery question was
-    her date of birth and high school. Attacker looked that up in 15 seconds
-    on Wikipedia and reset her password.
-
-    Also recall Matt Honen's gmail account (Wired Journalist) from Lecture 2.
-
-    Think of this as yet another authentication mechanism.
-
-    Composing authentication mechanisms is tricky: are both or either required?
-
-    Recovery mechanisms are typically "either".
-
-    Sometimes composing "both" is a good idea: token/paper + password/PIN, etc.
+- Important part of the overall security story.
+- Sarah Palin's email account hack: Yahoo's recovery question was
+  her date of birth and high school. Attacker looked that up in 15 seconds
+  on Wikipedia and reset her password.
+- Also recall Matt Honen's gmail account (Wired Journalist) from Lecture 2.
+- Think of this as yet another authentication mechanism.
+- Composing authentication mechanisms is tricky: are both or either required?
+- Recovery mechanisms are typically "either".
+- Sometimes composing "both" is a good idea: token/paper + password/PIN, etc.
 
 ---
 
@@ -252,30 +236,31 @@ Alternatives
 Biometrics: leverage the unique aspects of a person's
 physical appearance or behavior.
 
-    -How big is the keyspace?
-        Fingerprints: ~13.3 bits.
-        Iris scan: ~19.9 bits.
-        Voice recognition: ~11.7 bits.
+- How big is the keyspace?
 
-    So, bits of entropy are roughly the same as passwords.
+  - Fingerprints: ~13.3 bits.
+  - Iris scan: ~19.9 bits.
+  - Voice recognition: ~11.7 bits.
+
+  So, bits of entropy are roughly the same as passwords.
 
 Scorecard (Yes is good, No is bad):
 
+```
                       Passwords        Biometrics
-
-Easy-to-learn: Yes Yes
-Infrequent errors: Quasi-yes No
-Scalable for users: No Yes
-Easy recovery: Yes No
-Nothing to carry: Yes Yes
+Easy-to-learn:        Yes              Yes
+Infrequent errors:    Quasi-yes        No
+Scalable for users:   No               Yes
+Easy recovery:        Yes              No
+Nothing to carry:     Yes              Yes
 3.5 vs 3
 
                       Passwords        Biometrics
-
-Server-compatible: Yes No
-Browser-compatible: Yes No
-Accessible: Yes Quasi-yes (entering biometrics is error-prone)  
- 3 vs 0.5
+Server-compatible:    Yes              No
+Browser-compatible:   Yes              No
+Accessible:           Yes              Quasi-yes (entering is error-prone)
+3 vs 0.5
+```
 
 Not obvious that biometrics are "better" than passwords!
 
@@ -296,22 +281,21 @@ CAP (Chip Authentication Program):
 3. Reader talks to the card's embedded processor, outputs an 8-digit code
    which the user supplies to the web site.
 
-
+```
                       CAP reader
-
-Easy-to-learn: Yes
-Infrequent errors: Quasi-yes
-Scalable for users: No (users require card+PIN per verifier)
-Easy recovery: No
-Nothing to carry: No
+Easy-to-learn:        Yes
+Infrequent errors:    Quasi-yes
+Scalable for users:   No (users require card+PIN per verifier)
+Easy recovery:        No
+Nothing to carry:     No
 1.5
 
                       CAP reader
-
-Server-compatible: No
-Browser-compatible: Yes
-Accessible: No (blind people can't read 8-digit code)
+Server-compatible:    No
+Browser-compatible:   Yes
+Accessible:           No (blind people can't read 8-digit code)
 1
+```
 
 In practice, deployability and usability are often more important
 than security.
@@ -322,10 +306,10 @@ than security.
 - The less usable a scheme is, the more that users will complain (and try to
   pick easier authentication tokens that are more vulnerable to attackers).
 
--Some situations may assign different weight to different evaluation metrics.
+- Some situations may assign different weight to different evaluation metrics.
 
-    On a military base, the security benefits of a hardware-based token might
-    outweigh the problems with usability and deployability.
+  On a military base, the security benefits of a hardware-based token might
+  outweigh the problems with usability and deployability.
 
 ---
 
@@ -335,9 +319,10 @@ Requires users to authenticate themselves using two or more authentication
 mechanisms.
 
 The mechanisms should involve different modalities!
-*Something you know (e.g., a password)
-*Something you possess (e.g., a cellphone, a hardware token)
-\*Something you are (e.g., biometrics)
+
+- Something you know (e.g., a password)
+- Something you possess (e.g., a cellphone, a hardware token)
+- Something you are (e.g., biometrics)
 
 Idea is that an attacker must steal/subvert multiple authentication
 mechanisms to impersonate a user (e.g., attacker might guess a password,

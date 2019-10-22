@@ -3,10 +3,6 @@
 ## On the board
 
 Last lecture: PRGs and Stream ciphers
-Announcements:
-
-- HW 2 due next Tuesday
-- Lab 2 released later Today
 
 Agenda for Today
 
@@ -39,12 +35,11 @@ than the inverse of any polynomial (1/poly(n)).
 
 Examples:
 
-    - 2^-n, 2^-\sqrt(n), n^-log n
+```
+- 2^-n, 2^-\sqrt(n), n^-log n
+```
 
-Why do we draw the line at polynomial? We'll see later when
-we discuss computational adversary. Sneak peak: because
-we assume adversary can only use algorithms that run
-in poly-time.
+Why do we draw the line at polynomial? We'll see later when we discuss computational adversary. Sneak peak: because we assume adversary can only use algorithms that run in poly-time.
 
 2. Computational security
 
@@ -60,15 +55,7 @@ Alternate definition: Indistinguishability from random
 
 Def: G is indistinguishable from random if
 
-          [ k <-R K,  output G(k)]
-
-          is indistinguishable from
-
-          [ r <-R {0,1}^n, output r]
-
-Represented with a picture:
-
-    [ Drawing of {0, 1}^n  with G() inside ]
+`[ k <-R K, output G(k)]` is indistinguishable from `[ r <-R {0,1}^n, output r]`
 
 But how do we define "indistinguishable"?
 
@@ -124,53 +111,45 @@ We use the notion of "advantage"
   at differentiating inputs given to it. In this case, how good it is at
   differentiating the output of a PRG vs a truly random string.
 
+Suppose we have PRG G: K -> {0, 1}^n and a stat. test A on {0,1}^n
 
-    Suppose we have PRG G: K -> {0, 1}^n and a stat. test A on {0,1}^n
+Define advantage:
 
-    Define advantage:
+    Adv_PRG[A, G] = | Pr[A(G(k)) = 1] - Pr[A(r) = 1] |
 
-      Adv_PRG[A, G] = | Pr[A(G(k)) = 1] - Pr[A(r) = 1] |
+    where k<-R K    and   r <-R {0, 1}^n
 
-      where k<-R K    and   r <-R {0, 1}^n
+If advantage is close to 1:
 
+    statistical test behaves differently when given pseudorandom inputs
+    vs random inputs (so it is a good statistical test!)
 
+    It can distinguish output of G from random.
 
-    If advantage is close to 1:
+If advantage is close to 0:
 
-      statistical test behaves differently when given pseudorandom inputs
-      vs random inputs (so it is a good statistical test!)
+    statistical test behaves the same for both. So it cannot distinguish
+    output of G from random.
 
-      It can distinguish output of G from random.
+Example 1:
 
+      Suppose A(x) = 0 => Adv_PRG[A, G] = 0
 
-    If advantage is close to 0:
+Example 2:
 
-      statistical test behaves the same for both. So it cannot distinguish
-      output of G from random.
+    Suppose we have PRG G: K->{0,1}^n with the following property:
 
-
-
-    Example 1:
-
-        Suppose A(x) = 0 => Adv_PRG[A, G] = 0
-
-
-
-    Example 2:
-
-      Suppose we have PRG G: K->{0,1}^n with the following property:
-
-        most-significant-bit(G(k)) = 1  for 2/3 of keys \in K
+      most-significant-bit(G(k)) = 1  for 2/3 of keys \in K
 
 
-     Suppose we have a statistical test A(x):
+    Suppose we have a statistical test A(x):
 
-        if msb(x) = 1 output 1 else output 0
+      if msb(x) = 1 output 1 else output 0
 
 
-      Then
+    Then
 
-        Adv_PRG[A, G] = | Pr[A(G(k)) = 1]  - Pr[A(r) = 1] | = 1/6
+      Adv_PRG[A, G] = | Pr[A(G(k)) = 1]  - Pr[A(r) = 1] | = 1/6
 
 ---
 
@@ -272,8 +251,8 @@ In other words no efficient adversary can distinguish between
 an encryption of m_0 and an encryption of m_1.
 
 => for all m_0, m_1 \in M (that the adversary can generate)
-  
- { E(k, m_0) } is computationally indistinguishable from { E(k, m_1) }
+
+{ E(k, m_0) } is computationally indistinguishable from { E(k, m_1) }
 
 This is essentially the same as perfect secrecy... except that it applies
 only to efficient adversaries.
@@ -313,9 +292,9 @@ the semantic security game with non-negligible advantage.
 We will use that adversary A to build another adversary B that can
 distinguish between a PRG and a random string with non-negligible advantage.
 
-[ PRG Challenger ][ adv b ] [ Adv A ]  
-  
- b_prg <- {0, 1}  
+[ PRG Challenger ][ adv b ] [ Adv A ]
+
+b_prg <- {0, 1}  
  k <-R K
 
      if b_prg = 0          val
@@ -376,8 +355,8 @@ There are a few properties we care about when talking about
 cryptographic hash functions:
 
 (1) Pre-image resistance:
-  
- Given a digest y, it is hard for an adversary to find an x such
+
+Given a digest y, it is hard for an adversary to find an x such
 that H(x) = y. In other words, it is hard to find a pre-image of y.
 
 (2) Second pre-image resistance
