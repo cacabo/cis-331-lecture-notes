@@ -65,7 +65,7 @@ approximate it" with a collision-resistant hash function.
 
 - Digital signatures (we will discuss the schemes later).
 
-  - Instead of hashing 100 MB file, I hash the file and sign the digest!
+  - Instead of signing a 100 MB file, I hash the file and sign the digest!
 
 - Proving that an integer x is > some value. For example, your age > 21
 
@@ -73,8 +73,8 @@ approximate it" with a collision-resistant hash function.
   (b) Compute c = H^x(1 || seed), where seed \in {0,1}^256 and x is your age
   (c) Assume a trusted third party (e.g., Social security) signs c.
   (d) Bartender asks for your age. You show them:
-    
-   p = H^{x-21}(1||seed)
+
+  p = H^{x-21}(1||seed)
 
       Bartender can compute: H^21(p), and compare with c. If they are equal
       you are at least 21.
@@ -84,8 +84,7 @@ approximate it" with a collision-resistant hash function.
       You cannot lie about your age (that would require identifying a
       preimage!).
 
-  - Pedantic point: you actually need a random oracle instead of H,
-    but ignore that for now.
+  - Pedantic point: you actually need a random oracle instead of H, but ignore that for now.
 
 ---
 
@@ -233,9 +232,6 @@ approximate it" with a collision-resistant hash function.
             ...
             H_i = h(H_{i-1}, m_{i-1})
 
-
-    [ Draw figure ]
-
 Theorem: If h is collision resistant then so is H
 
 Proof (for you to do). Hint: Show that collision on H => collision on h.
@@ -283,18 +279,18 @@ block ciphers. So nobody uses this.
 
 ---
 
-Case study: SHA 256
+### Case study: SHA 256
 
-    - Merkle-Damgard function
-    - Davies-Meyer compression function
-    - SHACAL-2 Block cipher
+- Merkle-Damgard function
+- Davies-Meyer compression function
+- SHACAL-2 Block cipher
 
+```
+512-bit key    --->
+                      SHACAL-2   -------> 256-bit block
+256-bit block  --->
+```
 
-     512-bit key    --->
-                            SHACAL-2   -------> 256-bit block
-     256-bit block  --->
-
-
-    Remember that in Davies-Meyer, the "key" is really the message.
-    This means that SHA256 processes blocks of the message of size 512-bit
-    at a time.
+Remember that in Davies-Meyer, the "key" is really the message.
+This means that SHA256 processes blocks of the message of size 512-bit
+at a time.

@@ -292,36 +292,32 @@ the semantic security game with non-negligible advantage.
 We will use that adversary A to build another adversary B that can
 distinguish between a PRG and a random string with non-negligible advantage.
 
-[ PRG Challenger ][ adv b ] [ Adv A ]
+```
+[ PRG Challenger ]  [ adv b ]            [ Adv A ]
+b_prg <- {0, 1}
+k <-R K
 
-b_prg <- {0, 1}  
- k <-R K
+if b_prg = 0          val
+  send val = G(k)  ------->
+else
+  send val = r
 
-     if b_prg = 0          val
-      send val = G(k)
-                         ------->
-     else
-      send val = r
-
-
-                                               <-------  m1, m2
+                                  <-------  m1, m2
 
 
-                              b <- {0,1}
-                              c = Enc(m_b, val)
-                                                    c
-                                              ------------>
+                b <- {0,1}
+                c = Enc(m_b, val)
+                                      c
+                                ------------>
 
-                                              <------------
-                                                    b'
+                                <------------
+                                      b'
 
-                              if b = b'
-                                return b_prg' = 0
-                              else
-                                return b_prg' = 1
-
-
-
+                if b = b'
+                  return b_prg' = 0
+                else
+                  return b_prg' = 1
+```
 
     So how do we analyze this? The key idea:
 
